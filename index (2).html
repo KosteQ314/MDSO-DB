@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSPD Mobile Data Terminal - Record Log System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tactical: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                            600: '#374151',
+                            accent: '#06B6D4', // Cyan accent
+                            badge: '#1E293B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
+    </style>
+</head>
+<body class="bg-tactical-900 text-slate-100 min-h-screen flex flex-col antialiased">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="bg-tactical-800 border-b border-slate-800 sticky top-0 z-30 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-cyan-500/10 border border-cyan-500/30 p-2.5 rounded-xl text-cyan-400">
+                    <i class="fa-solid font-bold fa-shield-halved text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wide uppercase text-slate-100 flex items-center gap-2">
+                        LSPD Record Log
+                        <span id="apiStatusBadge" class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-medium">
+                            <i class="fa-solid fa-database text-[10px] mr-1"></i> Local DB Mode
+                        </span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Mobile Data Terminal v2.4 • Los Santos Police Dept</p>
+                </div>
+            </div>
+
+            <!-- Global Search Field -->
+            <div class="flex-1 max-w-xl relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input type="text" id="searchInput" oninput="handleSearch()"
+                    placeholder="Search citizens by name, DOB, license status, or record IDs..." 
+                    class="w-full pl-10 pr-10 py-2 bg-tactical-900 border border-slate-700/80 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                <button onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="openCitizenModal()" class="flex-1 md:flex-none px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-user-plus text-cyan-400"></i>
+                    <span>+ New Citizen</span>
+                </button>
+                <button onclick="openIncidentModal()" class="flex-1 md:flex-none px-3.5 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg transition flex items-center justify-center gap-1.5 shadow-md shadow-cyan-600/20">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>+ Log Incident</span>
+                </button>
+                <button onclick="openSettingsModal()" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-cyan-400 rounded-lg transition" title="API Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT DASHBOARD -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- LEFT PANEL: CITIZEN DIRECTORY (4 COLUMNS ON DESKTOP) -->
+        <section class="lg:col-span-5 flex flex-col space-y-4">
+            
+            <!-- Section Header & Stats -->
+            <div class="flex items-center justify-between bg-tactical-800 p-3.5 rounded-xl border border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-users text-cyan-400 text-sm"></i>
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-300">Citizen Database</h2>
+                </div>
+                <span id="citizenCountBadge" class="text-xs bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-slate-400 font-mono">0 Loaded</span>
+            </div>
+
+            <!-- Citizen Cards Container -->
+            <div id="citizensList" class="space-y-3 overflow-y-auto max-h-[calc(100vh-230px)] pr-1">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: LINKED RECORDS & PROFILE DETAILS (7 COLUMNS ON DESKTOP) -->
+        <section class="lg:col-span-7 flex flex-col space-y-4">
+            
+            <!-- Citizen Active Record Banner -->
+            <div id="citizenDetailHeader" class="bg-tactical-800 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+                <div class="text-center py-12 text-slate-500">
+                    <i class="fa-solid fa-address-card text-5xl mb-3 block text-slate-600/50"></i>
+                    <p class="text-sm font-medium">Select a citizen profile to view linked incident logs and historical records.</p>
+                </div>
+            </div>
+
+            <!-- Linked Incident Records Section -->
+            <div class="bg-tactical-800 p-4 rounded-xl border border-slate-800 flex-1 flex flex-col space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-folder-open text-cyan-400 text-sm"></i>
+                        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-300">Linked Incident Reports</h3>
+                    </div>
+                    <span id="linkedCountBadge" class="text-xs bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 text-slate-400 font-mono">0 Incidents</span>
+                </div>
+
+                <!-- Incidents Timeline / List -->
+                <div id="incidentsList" class="space-y-3 overflow-y-auto max-h-[calc(100vh-380px)] pr-1 flex-1">
+                    <div class="text-center py-10 text-slate-500">
+                        <p class="text-xs">No active citizen profile selected.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: ADD / EDIT CITIZEN MODAL -->
+    <div id="citizenModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-tactical-800 border border-slate-700 rounded-xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in duration-150">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700">
+                <h3 id="citizenModalTitle" class="text-base font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear text-cyan-400"></i> New Citizen Profile
+                </h3>
+                <button onclick="closeCitizenModal()" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="citizenForm" onsubmit="saveCitizen(event)" class="mt-4 space-y-4">
+                <input type="hidden" id="citId">
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Full Legal Name *</label>
+                    <input type="text" id="citName" required placeholder="e.g. John Doe" 
+                        class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Date of Birth *</label>
+                        <input type="date" id="citDob" required 
+                            class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Driver License</label>
+                        <select id="citLicense" class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                            <option value="Valid">Valid</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Revoked">Revoked</option>
+                            <option value="None">None / Unlicensed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Warrant Status</label>
+                        <select id="citWarrant" class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                            <option value="Clean">Clean (No Warrant)</option>
+                            <option value="Active Warrant">Active Warrant</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Photo URL (Optional)</label>
+                        <input type="text" id="citPhoto" placeholder="https://..." 
+                            class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700 flex justify-end space-x-2">
+                    <button type="button" onclick="closeCitizenModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg shadow-md">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD / EDIT INCIDENT LOG MODAL -->
+    <div id="incidentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-tactical-800 border border-slate-700 rounded-xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700">
+                <h3 id="incidentModalTitle" class="text-base font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature text-cyan-400"></i> Log Incident Report
+                </h3>
+                <button onclick="closeIncidentModal()" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="incidentForm" onsubmit="saveIncident(event)" class="mt-4 space-y-4">
+                <input type="hidden" id="incId">
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Select Linked Citizen *</label>
+                    <select id="incCitizenId" required class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Incident Type *</label>
+                        <select id="incType" required class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                            <option value="Arrest">Arrest Report</option>
+                            <option value="Citation">Citation / Fine</option>
+                            <option value="Warning">Written Warning</option>
+                            <option value="Medical Log">Medical / EMS Log</option>
+                            <option value="Investigation">Field Investigation</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Reporting Officer *</label>
+                        <input type="text" id="incOfficer" required placeholder="Officer Name / Badge #" 
+                            class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Incident Title / Primary Charge *</label>
+                    <input type="text" id="incTitle" required placeholder="e.g. Reckless Driving & Speeding" 
+                        class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Narrative / Detailed Report *</label>
+                    <textarea id="incDetails" rows="4" required placeholder="Provide a detailed log of events..." 
+                        class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700 flex justify-end space-x-2">
+                    <button type="button" onclick="closeIncidentModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg shadow-md">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: DELETE CONFIRMATION MODAL -->
+    <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-tactical-800 border border-red-500/30 rounded-xl max-w-sm w-full p-5 shadow-2xl text-center">
+            <div class="w-12 h-12 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-red-500/30">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-100">Confirm Expungement</h3>
+            <p id="deleteModalMessage" class="text-xs text-slate-400 my-2">Are you sure you want to delete this record? This action cannot be undone.</p>
+            
+            <div class="mt-5 flex justify-center space-x-2">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg">Cancel</button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-lg shadow-md">Delete Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: API & SETTINGS CONFIG MODAL -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-tactical-800 border border-slate-700 rounded-xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700">
+                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-cyan-400"></i> Database & API Settings
+                </h3>
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="mt-4 space-y-4">
+                <p class="text-xs text-slate-400">Connect your custom NocoDB, Baserow, or REST backend API. If disabled, data is saved locally in your browser.</p>
+
+                <div class="flex items-center justify-between p-3 bg-tactical-900 rounded-lg border border-slate-700">
+                    <span class="text-xs font-semibold text-slate-200">Use External REST API</span>
+                    <input type="checkbox" id="apiToggle" onchange="toggleApiFields()" class="w-4 h-4 accent-cyan-500">
+                </div>
+
+                <div id="apiConfigFields" class="space-y-3 opacity-50 pointer-events-none transition-opacity">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">NocoDB / REST API Base URL</label>
+                        <input type="text" id="apiBaseUrl" placeholder="https://app.nocodb.com/api/v2" 
+                            class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">API Token / XC-Token Key</label>
+                        <input type="password" id="apiKey" placeholder="e.g. xc-token-secret-key" 
+                            class="w-full px-3 py-2 bg-tactical-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:border-cyan-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700 flex justify-between items-center">
+                    <button onclick="resetToDemoData()" type="button" class="text-xs text-amber-400 hover:underline">Reset Demo Data</button>
+                    <div class="space-x-2">
+                        <button onclick="closeSettingsModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg">Cancel</button>
+                        <button onclick="saveSettings()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg shadow-md">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script>
+        // Default Mock / Starter Seed Data
+        const INITIAL_CITIZENS = [
+            {
+                id: 'cit-101',
+                name: 'Michael De Santa',
+                dob: '1968-04-20',
+                license: 'Valid',
+                warrant: 'Clean',
+                photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+            },
+            {
+                id: 'cit-102',
+                name: 'Trevor Philips',
+                dob: '1973-11-14',
+                license: 'Revoked',
+                warrant: 'Active Warrant',
+                photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
+            },
+            {
+                id: 'cit-103',
+                name: 'Franklin Clinton',
+                dob: '1988-06-11',
+                license: 'Suspended',
+                warrant: 'Clean',
+                photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+            }
+        ];
+
+        const INITIAL_INCIDENTS = [
+            {
+                id: 'inc-501',
+                citizenId: 'cit-102',
+                type: 'Arrest',
+                title: 'Grand Theft Auto & Reckless Endangerment',
+                officer: 'Officer Miller #402',
+                details: 'Subject was observed operating a stolen vehicle at high speeds in Sandy Shores. Fled from traffic stop resulting in pursuit.',
+                date: '2026-09-28T14:30:00.000Z'
+            },
+            {
+                id: 'inc-502',
+                citizenId: 'cit-103',
+                type: 'Citation',
+                title: 'Illegal Street Racing & Excessive Speeding',
+                officer: 'Sergeant Davis #108',
+                details: 'Cited for traveling 95 MPH in a 35 MPH zone during an illegal street racing gathering.',
+                date: '2026-09-25T21:15:00.000Z'
+            }
+        ];
+
+        // Global State Variables
+        let citizens = [];
+        let incidents = [];
+        let selectedCitizenId = null;
+        let deleteTarget = { type: null, id: null };
+
+        // Local Storage API Config Keys
+        let config = {
+            useApi: false,
+            apiUrl: '',
+            apiKey: ''
+        };
+
+        // Initialize Application
+        window.onload = function() {
+            loadConfig();
+            loadData();
+        };
+
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('lspd_mdt_config');
+            if (savedConfig) {
+                config = JSON.parse(savedConfig);
+            }
+            updateApiStatusUI();
+        }
+
+        function saveSettings() {
+            config.useApi = document.getElementById('apiToggle').checked;
+            config.apiUrl = document.getElementById('apiBaseUrl').value.trim();
+            config.apiKey = document.getElementById('apiKey').value.trim();
+
+            localStorage.setItem('lspd_mdt_config', JSON.stringify(config));
+            updateApiStatusUI();
+            closeSettingsModal();
+            loadData();
+        }
+
+        function updateApiStatusUI() {
+            const badge = document.getElementById('apiStatusBadge');
+            if (config.useApi) {
+                badge.className = "text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-medium";
+                badge.innerHTML = `<i class="fa-solid fa-network-wired text-[10px] mr-1"></i> REST API Active`;
+            } else {
+                badge.className = "text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-medium";
+                badge.innerHTML = `<i class="fa-solid fa-database text-[10px] mr-1"></i> Local Storage`;
+            }
+        }
+
+        function toggleApiFields() {
+            const enabled = document.getElementById('apiToggle').checked;
+            const container = document.getElementById('apiConfigFields');
+            if (enabled) {
+                container.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                container.classList.add('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        async function loadData() {
+            if (config.useApi && config.apiUrl) {
+                try {
+                    // REST API Fetch Logic
+                    const citRes = await fetch(`${config.apiUrl}/citizens`, {
+                        headers: { 'xc-token': config.apiKey, 'Content-Type': 'application/json' }
+                    });
+                    citizens = await citRes.json();
+
+                    const incRes = await fetch(`${config.apiUrl}/incidents`, {
+                        headers: { 'xc-token': config.apiKey, 'Content-Type': 'application/json' }
+                    });
+                    incidents = await incRes.json();
+                } catch (err) {
+                    console.error("API Fetch Error, falling back to Local Storage:", err);
+                    loadLocalData();
+                }
+            } else {
+                loadLocalData();
+            }
+
+            renderCitizensList();
+            if (citizens.length > 0 && !selectedCitizenId) {
+                selectCitizen(citizens[0].id);
+            } else if (selectedCitizenId) {
+                renderCitizenDetails();
+            }
+        }
+
+        function loadLocalData() {
+            const localCit = localStorage.getItem('lspd_citizens');
+            const localInc = localStorage.getItem('lspd_incidents');
+
+            if (!localCit) {
+                citizens = INITIAL_CITIZENS;
+                incidents = INITIAL_INCIDENTS;
+                saveLocalData();
+            } else {
+                citizens = JSON.parse(localCit);
+                incidents = JSON.parse(localInc || '[]');
+            }
+        }
+
+        function saveLocalData() {
+            localStorage.setItem('lspd_citizens', JSON.stringify(citizens));
+            localStorage.setItem('lspd_incidents', JSON.stringify(incidents));
+        }
+
+        function resetToDemoData() {
+            citizens = [...INITIAL_CITIZENS];
+            incidents = [...INITIAL_INCIDENTS];
+            saveLocalData();
+            closeSettingsModal();
+            selectedCitizenId = citizens[0].id;
+            loadData();
+        }
+
+        // Render Citizens List Panel
+        function renderCitizensList(filteredList = null) {
+            const listContainer = document.getElementById('citizensList');
+            const listToRender = filteredList || citizens;
+            document.getElementById('citizenCountBadge').innerText = `${listToRender.length} Registered`;
+
+            if (listToRender.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="bg-tactical-800/50 p-8 rounded-xl text-center border border-slate-800 text-slate-500">
+                        <i class="fa-solid fa-user-slash text-3xl mb-2"></i>
+                        <p class="text-xs">No matching citizen profiles found.</p>
+                    </div>`;
+                return;
+            }
+
+            listContainer.innerHTML = listToRender.map(cit => {
+                const isSelected = cit.id === selectedCitizenId;
+                const hasWarrant = cit.warrant === 'Active Warrant';
+                
+                // License Badge Styling
+                let licColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+                if (cit.license === 'Suspended') licColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+                if (cit.license === 'Revoked') licColor = 'bg-red-500/10 text-red-400 border-red-500/30';
+
+                return `
+                    <div onclick="selectCitizen('${cit.id}')" 
+                        class="p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                            isSelected 
+                            ? 'bg-cyan-950/30 border-cyan-500/60 shadow-lg shadow-cyan-950/20' 
+                            : 'bg-tactical-800 border-slate-800 hover:border-slate-700 hover:bg-slate-800/80'
+                        }">
+                        <div class="flex items-center space-x-3">
+                            <img src="${cit.photo || 'https://placehold.co/100x100/1F2937/06B6D4?text=MDT'}" 
+                                onerror="this.src='https://placehold.co/100x100/1F2937/06B6D4?text=MDT'"
+                                class="w-12 h-12 rounded-lg object-cover border border-slate-700">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-sm font-bold text-slate-100">${cit.name}</h4>
+                                    ${hasWarrant ? '<span class="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse">Warrant</span>' : ''}
+                                </div>
+                                <p class="text-xs text-slate-400">DOB: <span class="font-mono text-slate-300">${cit.dob}</span></p>
+                                <div class="mt-1 flex items-center gap-2">
+                                    <span class="text-[10px] px-2 py-0.5 rounded border ${licColor}">
+                                        License: ${cit.license}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2">
+                            <button onclick="event.stopPropagation(); editCitizen('${cit.id}')" class="text-slate-500 hover:text-cyan-400 text-xs p-1" title="Edit Profile">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); promptDelete('citizen', '${cit.id}')" class="text-slate-500 hover:text-red-400 text-xs p-1" title="Delete Citizen">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectCitizen(id) {
+            selectedCitizenId = id;
+            renderCitizensList();
+            renderCitizenDetails();
+        }
+
+        function renderCitizenDetails() {
+            const detailBanner = document.getElementById('citizenDetailHeader');
+            const incidentsContainer = document.getElementById('incidentsList');
+            
+            const cit = citizens.find(c => c.id === selectedCitizenId);
+            if (!cit) {
+                detailBanner.innerHTML = `
+                    <div class="text-center py-8 text-slate-500">
+                        <p class="text-xs">Selected profile was removed.</p>
+                    </div>`;
+                incidentsContainer.innerHTML = '';
+                document.getElementById('linkedCountBadge').innerText = '0 Incidents';
+                return;
+            }
+
+            // Render Profile Header Banner
+            detailBanner.innerHTML = `
+                <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
+                    <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4">
+                        <img src="${cit.photo || 'https://placehold.co/150x150/1F2937/06B6D4?text=MDT'}" 
+                            onerror="this.src='https://placehold.co/150x150/1F2937/06B6D4?text=MDT'"
+                            class="w-20 h-20 rounded-xl object-cover border-2 border-cyan-500/40 shadow-lg">
+                        <div class="text-center md:text-left">
+                            <div class="flex items-center justify-center md:justify-start gap-2">
+                                <h2 class="text-xl font-bold text-slate-100">${cit.name}</h2>
+                                <span class="text-xs px-2 py-0.5 rounded bg-slate-900 border border-slate-700 font-mono text-cyan-400">${cit.id}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Date of Birth: <span class="text-slate-200 font-mono">${cit.dob}</span></p>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-2">
+                                <span class="text-xs px-2.5 py-1 rounded-md border font-medium ${
+                                    cit.license === 'Valid' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-red-500/10 text-red-400 border-red-500/30'
+                                }">
+                                    <i class="fa-solid fa-id-card mr-1"></i> License: ${cit.license}
+                                </span>
+                                <span class="text-xs px-2.5 py-1 rounded-md border font-medium ${
+                                    cit.warrant === 'Active Warrant' ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-slate-900 text-slate-400 border-slate-700'
+                                }">
+                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> ${cit.warrant}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openIncidentModal('${cit.id}')" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> File Record
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Filter Linked Incident Records
+            const linkedIncidents = incidents.filter(i => i.citizenId === cit.id);
+            document.getElementById('linkedCountBadge').innerText = `${linkedIncidents.length} Recorded`;
+
+            if (linkedIncidents.length === 0) {
+                incidentsContainer.innerHTML = `
+                    <div class="bg-tactical-900/50 p-8 rounded-xl text-center border border-slate-800/80 text-slate-500">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                        <p class="text-xs">No criminal reports or medical logs filed for this citizen.</p>
+                    </div>`;
+                return;
+            }
+
+            incidentsContainer.innerHTML = linkedIncidents.map(inc => {
+                let badgeStyle = 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+                if (inc.type === 'Arrest') badgeStyle = 'bg-red-500/10 text-red-400 border-red-500/30';
+                if (inc.type === 'Citation') badgeStyle = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+                if (inc.type === 'Medical Log') badgeStyle = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+
+                const formattedDate = new Date(inc.date).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+
+                return `
+                    <div class="bg-tactical-900 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] px-2 py-0.5 rounded border uppercase font-bold tracking-wider ${badgeStyle}">${inc.type}</span>
+                                    <h4 class="text-sm font-bold text-slate-200">${inc.title}</h4>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Filed by: <span class="text-cyan-400 font-medium">${inc.officer}</span> • 
+                                    <span class="font-mono text-slate-400">${formattedDate}</span>
+                                </p>
+                            </div>
+                            <div class="flex space-x-1">
+                                <button onclick="editIncident('${inc.id}')" class="text-slate-500 hover:text-cyan-400 text-xs p-1">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="promptDelete('incident', '${inc.id}')" class="text-slate-500 hover:text-red-400 text-xs p-1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 bg-tactical-800/80 p-3 rounded-lg border border-slate-800 leading-relaxed font-sans">
+                            ${inc.details}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                renderCitizensList();
+                return;
+            }
+
+            // Filter Citizens by Name, DOB, License, or Linked Incidents
+            const filtered = citizens.filter(cit => {
+                const matchesCit = cit.name.toLowerCase().includes(query) ||
+                                   cit.dob.includes(query) ||
+                                   cit.license.toLowerCase().includes(query) ||
+                                   cit.warrant.toLowerCase().includes(query);
+
+                const citIncidents = incidents.filter(i => i.citizenId === cit.id);
+                const matchesInc = citIncidents.some(i => 
+                    i.title.toLowerCase().includes(query) || 
+                    i.details.toLowerCase().includes(query) ||
+                    i.officer.toLowerCase().includes(query)
+                );
+
+                return matchesCit || matchesInc;
+            });
+
+            renderCitizensList(filtered);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderCitizensList();
+        }
+
+        // Open/Close Modals & Data Saving
+        function openCitizenModal(editId = null) {
+            document.getElementById('citizenModal').classList.remove('hidden');
+            if (editId) {
+                const cit = citizens.find(c => c.id === editId);
+                document.getElementById('citizenModalTitle').innerHTML = `<i class="fa-solid fa-user-pen text-cyan-400"></i> Edit Citizen Profile`;
+                document.getElementById('citId').value = cit.id;
+                document.getElementById('citName').value = cit.name;
+                document.getElementById('citDob').value = cit.dob;
+                document.getElementById('citLicense').value = cit.license;
+                document.getElementById('citWarrant').value = cit.warrant;
+                document.getElementById('citPhoto').value = cit.photo || '';
+            } else {
+                document.getElementById('citizenModalTitle').innerHTML = `<i class="fa-solid fa-user-plus text-cyan-400"></i> New Citizen Profile`;
+                document.getElementById('citizenForm').reset();
+                document.getElementById('citId').value = '';
+            }
+        }
+
+        function closeCitizenModal() {
+            document.getElementById('citizenModal').classList.add('hidden');
+        }
+
+        async function saveCitizen(e) {
+            e.preventDefault();
+            const id = document.getElementById('citId').value || `cit-${Date.now()}`;
+            const newCitizen = {
+                id,
+                name: document.getElementById('citName').value.trim(),
+                dob: document.getElementById('citDob').value,
+                license: document.getElementById('citLicense').value,
+                warrant: document.getElementById('citWarrant').value,
+                photo: document.getElementById('citPhoto').value.trim()
+            };
+
+            const existingIdx = citizens.findIndex(c => c.id === id);
+            if (existingIdx >= 0) {
+                citizens[existingIdx] = newCitizen;
+            } else {
+                citizens.unshift(newCitizen);
+            }
+
+            if (!config.useApi) saveLocalData();
+            closeCitizenModal();
+            selectCitizen(id);
+            loadData();
+        }
+
+        function editCitizen(id) {
+            openCitizenModal(id);
+        }
+
+        function openIncidentModal(preselectedCitId = null, editIncId = null) {
+            document.getElementById('incidentModal').classList.remove('hidden');
+            const select = document.getElementById('incCitizenId');
+            
+            // Populate Dropdown Options
+            select.innerHTML = citizens.map(c => 
+                `<option value="${c.id}">${c.name} (${c.dob})</option>`
+            ).join('');
+
+            if (editIncId) {
+                const inc = incidents.find(i => i.id === editIncId);
+                document.getElementById('incidentModalTitle').innerHTML = `<i class="fa-solid fa-file-pen text-cyan-400"></i> Edit Incident Report`;
+                document.getElementById('incId').value = inc.id;
+                document.getElementById('incCitizenId').value = inc.citizenId;
+                document.getElementById('incType').value = inc.type;
+                document.getElementById('incOfficer').value = inc.officer;
+                document.getElementById('incTitle').value = inc.title;
+                document.getElementById('incDetails').value = inc.details;
+            } else {
+                document.getElementById('incidentModalTitle').innerHTML = `<i class="fa-solid fa-file-circle-plus text-cyan-400"></i> Log Incident Report`;
+                document.getElementById('incidentForm').reset();
+                document.getElementById('incId').value = '';
+                if (preselectedCitId) {
+                    select.value = preselectedCitId;
+                } else if (selectedCitizenId) {
+                    select.value = selectedCitizenId;
+                }
+            }
+        }
+
+        function closeIncidentModal() {
+            document.getElementById('incidentModal').classList.add('hidden');
+        }
+
+        async function saveIncident(e) {
+            e.preventDefault();
+            const id = document.getElementById('incId').value || `inc-${Date.now()}`;
+            const targetCitId = document.getElementById('incCitizenId').value;
+
+            const newIncident = {
+                id,
+                citizenId: targetCitId,
+                type: document.getElementById('incType').value,
+                officer: document.getElementById('incOfficer').value.trim(),
+                title: document.getElementById('incTitle').value.trim(),
+                details: document.getElementById('incDetails').value.trim(),
+                date: new Date().toISOString()
+            };
+
+            const existingIdx = incidents.findIndex(i => i.id === id);
+            if (existingIdx >= 0) {
+                incidents[existingIdx] = newIncident;
+            } else {
+                incidents.unshift(newIncident);
+            }
+
+            if (!config.useApi) saveLocalData();
+            closeIncidentModal();
+            selectCitizen(targetCitId);
+            loadData();
+        }
+
+        function editIncident(id) {
+            openIncidentModal(null, id);
+        }
+
+        // Delete Confirmation Logic
+        function promptDelete(type, id) {
+            deleteTarget = { type, id };
+            const modal = document.getElementById('deleteModal');
+            const msg = document.getElementById('deleteModalMessage');
+            
+            if (type === 'citizen') {
+                msg.innerText = "Are you sure you want to expunge this citizen profile? All associated incident records will also be removed.";
+            } else {
+                msg.innerText = "Are you sure you want to delete this incident report?";
+            }
+
+            document.getElementById('confirmDeleteBtn').onclick = executeDelete;
+            modal.classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            deleteTarget = { type: null, id: null };
+        }
+
+        function executeDelete() {
+            if (deleteTarget.type === 'citizen') {
+                citizens = citizens.filter(c => c.id !== deleteTarget.id);
+                incidents = incidents.filter(i => i.citizenId !== deleteTarget.id);
+                if (selectedCitizenId === deleteTarget.id) {
+                    selectedCitizenId = citizens.length > 0 ? citizens[0].id : null;
+                }
+            } else if (deleteTarget.type === 'incident') {
+                incidents = incidents.filter(i => i.id !== deleteTarget.id);
+            }
+
+            if (!config.useApi) saveLocalData();
+            closeDeleteModal();
+            loadData();
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('apiToggle').checked = config.useApi;
+            document.getElementById('apiBaseUrl').value = config.apiUrl || '';
+            document.getElementById('apiKey').value = config.apiKey || '';
+            toggleApiFields();
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
