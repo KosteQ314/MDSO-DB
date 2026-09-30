@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RP Department - Mobile Data Terminal (MDT)</title>
+  <title>MDT System - Police & Department CAD</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #0f172a;
-      --bg-card: #1e293b;
-      --bg-card-hover: #334155;
+      --bg-dark: #0a0f1d;
+      --bg-card: #151d30;
+      --bg-card-hover: #1e2942;
       --accent-blue: #3b82f6;
       --accent-blue-hover: #2563eb;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border-color: #334155;
+      --border-color: #243049;
       --danger: #ef4444;
       --danger-hover: #dc2626;
       --success: #10b981;
       --warning: #f59e0b;
+      --purple: #8b5cf6;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +32,7 @@
       min-height: 100vh;
     }
 
-    /* Navbar Header */
+    /* CAD / MDT Header */
     header {
       background-color: var(--bg-card);
       border-bottom: 1px solid var(--border-color);
@@ -39,8 +40,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.5px; }
+    .brand-logo { color: var(--accent-blue); font-size: 1.5rem; }
     .brand-badge { background: var(--accent-blue); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; }
     
     .status-pill {
@@ -54,9 +57,9 @@
       border-radius: 20px;
       border: 1px solid rgba(16, 185, 129, 0.2);
     }
-    .status-dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; }
+    .status-dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
 
-    /* Main Container */
+    /* Main Workspace */
     main {
       flex: 1;
       padding: 2rem;
@@ -65,7 +68,37 @@
       width: 100%;
     }
 
-    /* Search & Action Bar */
+    /* Dashboard Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+    }
+    .stat-info h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info .stat-value { font-size: 1.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-top: 0.25rem; }
+
+    /* Search & Control Toolbar */
     .controls-bar {
       display: flex;
       gap: 1rem;
@@ -79,17 +112,17 @@
     }
     .search-input {
       width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       color: var(--text-main);
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
     }
-    .search-input:focus { border-color: var(--accent-blue); }
-    .search-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
     .btn {
       display: inline-flex;
@@ -101,19 +134,19 @@
       font-size: 0.9rem;
       cursor: pointer;
       border: none;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
     }
     .btn-primary { background-color: var(--accent-blue); color: white; }
-    .btn-primary:hover { background-color: var(--accent-blue-hover); }
+    .btn-primary:hover { background-color: var(--accent-blue-hover); transform: translateY(-1px); }
     .btn-secondary { background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); }
     .btn-secondary:hover { background-color: var(--bg-card-hover); }
     .btn-danger { background-color: var(--danger); color: white; }
     .btn-danger:hover { background-color: var(--danger-hover); }
 
-    /* Navigation Tabs */
+    /* Tabs Bar */
     .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
     .tab {
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
       border-bottom: 2px solid transparent;
       color: var(--text-muted);
@@ -122,11 +155,11 @@
     }
     .tab.active { border-bottom-color: var(--accent-blue); color: var(--text-main); font-weight: 600; }
 
-    /* Grid Views */
+    /* Panels & Cards */
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
     .card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -136,31 +169,32 @@
       flex-direction: column;
       transition: transform 0.2s, border-color 0.2s;
     }
-    .card:hover { transform: translateY(-2px); border-color: var(--accent-blue); }
+    .card:hover { transform: translateY(-3px); border-color: var(--accent-blue); }
 
-    .card-header { padding: 1.25rem; display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid var(--border-color); }
-    .civilian-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background-color: var(--bg-dark); }
-    .civilian-info h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .card-header { padding: 1.25rem; display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.1); }
+    .civilian-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background-color: var(--bg-dark); border: 2px solid var(--border-color); }
+    .civilian-info h3 { font-size: 1.15rem; margin-bottom: 0.25rem; color: var(--text-main); }
     
     .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; }
-    .info-row { display: flex; justify-content: space-between; }
-    .info-label { color: var(--text-muted); }
-    .info-value { font-weight: 500; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; }
+    .info-label { color: var(--text-muted); font-size: 0.85rem; }
+    .info-value { font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
 
-    .card-actions { padding: 1rem 1.25rem; background-color: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; justify-content: flex-end; }
+    .card-actions { padding: 1rem 1.25rem; background-color: rgba(0,0,0,0.2); border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; justify-content: flex-end; }
 
-    /* Table View for Incidents */
+    /* Tables */
     .table-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-    th, td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
-    th { background: rgba(0,0,0,0.2); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+    th, td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); }
+    th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
     tr:hover { background-color: var(--bg-card-hover); }
 
-    /* Modal / Dialog Component */
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -179,8 +213,9 @@
       max-height: 90vh;
       overflow-y: auto;
       padding: 1.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
     }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
     .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
 
     .form-group { margin-bottom: 1.25rem; }
@@ -198,31 +233,55 @@
     .form-control:focus { border-color: var(--accent-blue); }
     textarea.form-control { resize: vertical; min-height: 100px; }
 
-    /* Empty & Loading States */
     .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
+  <!-- CAD Header -->
   <header>
     <div class="brand">
-      <span>STATE DATABASE</span>
-      <span class="brand-badge">MDT v2.4</span>
+      <span class="brand-logo">🛡️</span>
+      <span>MOBILE DATA TERMINAL</span>
+      <span class="brand-badge">CAD SYSTEM</span>
     </div>
     <div class="status-pill">
       <div class="status-dot"></div>
-      <span id="connection-status">Connected to NocoDB</span>
+      <span id="connection-status">Connecting to NocoDB...</span>
     </div>
   </header>
 
-  <!-- Main Container -->
   <main>
-    <!-- Top Search & Actions Bar -->
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-info">
+          <h4>Civilian Profiles</h4>
+          <div id="stat-civilians" class="stat-value">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);">📄</div>
+        <div class="stat-info">
+          <h4>Incident Records</h4>
+          <div id="stat-incidents" class="stat-value">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--purple);">🏎️</div>
+        <div class="stat-info">
+          <h4>Vehicles On Record</h4>
+          <div id="stat-vehicles" class="stat-value">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Control Toolbar -->
     <div class="controls-bar">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="global-search" class="search-input" placeholder="Search Civilians by Full Name, Roblox or Discord username..." oninput="handleSearch()">
+        <input type="text" id="global-search" class="search-input" placeholder="Search Civilians by Name, Roblox, Discord, or Incidents..." oninput="handleSearch()">
       </div>
       <button class="btn btn-primary" onclick="openAddCivilianModal()">+ Add Civilian</button>
       <button class="btn btn-primary" onclick="openAddIncidentModal()">+ File Record</button>
@@ -236,9 +295,7 @@
 
     <!-- Civilian View Panel -->
     <div id="view-civilians" class="view-panel active">
-      <div id="civilians-grid" class="cards-grid">
-        <!-- Civilian Cards Injected via JavaScript -->
-      </div>
+      <div id="civilians-grid" class="cards-grid"></div>
     </div>
 
     <!-- Incidents View Panel -->
@@ -248,22 +305,20 @@
           <thead>
             <tr>
               <th>Incident Title</th>
-              <th>Civilian</th>
+              <th>Civilian Name</th>
               <th>Reporting Officer</th>
               <th>Type</th>
               <th>Fine / Bond</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="incidents-table-body">
-            <!-- Incident Rows Injected via JavaScript -->
-          </tbody>
+          <tbody id="incidents-table-body"></tbody>
         </table>
       </div>
     </div>
   </main>
 
-  <!-- Modal: Add / Edit Civilian -->
+  <!-- Add/Edit Civilian Modal -->
   <div id="modal-civilian" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
@@ -290,7 +345,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Owned Vehicles</label>
-          <input type="text" id="civ-vehicles" class="form-control" placeholder="e.g. Black Sultan (ABC-1234), Red Cruiser">
+          <input type="text" id="civ-vehicles" class="form-control" placeholder="e.g. Black Sultan (ABC-123)">
         </div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-civilian')">Cancel</button>
@@ -300,7 +355,7 @@
     </div>
   </div>
 
-  <!-- Modal: Add / Edit Incident Record -->
+  <!-- Add/Edit Incident Modal -->
   <div id="modal-incident" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
@@ -311,11 +366,11 @@
         <input type="hidden" id="inc-id">
         <div class="form-group">
           <label class="form-label">Incident Title *</label>
-          <input type="text" id="inc-title" class="form-control" required placeholder="e.g. Speeding / Evading Traffic Stop">
+          <input type="text" id="inc-title" class="form-control" required placeholder="e.g. 10-80 Vehicle Pursuit">
         </div>
         <div class="form-group">
           <label class="form-label">Civilian Name *</label>
-          <input type="text" id="inc-civilian" class="form-control" required placeholder="Select or type Civilian Full Name">
+          <input type="text" id="inc-civilian" class="form-control" required placeholder="Type Civilian Name">
         </div>
         <div class="form-group">
           <label class="form-label">Reporting Officer *</label>
@@ -323,7 +378,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Details / Narrative</label>
-          <textarea id="inc-details" class="form-control" placeholder="Provide full incident details..."></textarea>
+          <textarea id="inc-details" class="form-control" placeholder="Enter incident report details..."></textarea>
         </div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-incident')">Cancel</button>
@@ -334,17 +389,14 @@
   </div>
 
   <script>
-    /* -------------------------------------------------------------
-       1. NocoDB API CONFIGURATION (Pre-filled with your Base & Table IDs)
-    ------------------------------------------------------------- */
+    /* API Configuration */
     const API_CONFIG = {
       BASE_URL: 'https://app.nocodb.com/api/v2/tables',
-      AUTH_TOKEN: 'nc_pat_Um3j8Q3N2oUQ4b2FsabzrCOsw6FMtAQEFWtFm4CE', // Paste your API token from NocoDB Account Settings
-      CITIZENS_ENDPOINT: '/mp0kwao6xpss118/records', // Civilians Table ID
-      INCIDENTS_ENDPOINT: '/mp6oaqbr190kp1x/records'  // Records Table ID
+      AUTH_TOKEN: 'nc_pat_Um3j8Q3N2oUQ4b2FsabzrCOsw6FMtAQEFWtFm4CE', // Paste your Token from NocoDB Account Settings
+      CITIZENS_ENDPOINT: '/mp0kwao6xpss118/records',
+      INCIDENTS_ENDPOINT: '/mp6oaqbr190kp1x/records'
     };
 
-    // Global In-Memory Data Store
     let state = {
       civilians: [],
       incidents: [],
@@ -352,18 +404,36 @@
       activeTab: 'civilians'
     };
 
-    // On Page Load: Fetch Data from NocoDB API
     document.addEventListener('DOMContentLoaded', () => {
       fetchData();
     });
 
-    /* -------------------------------------------------------------
-       2. API FETCH & SYNC FUNCTIONS
-    ------------------------------------------------------------- */
+    /* Helper Function to Fix [object Object] from NocoDB Relational / Linked Fields */
+    function formatRelationalField(value, defaultText = 'N/A') {
+      if (!value) return defaultText;
+
+      // Handle Array of Objects or Strings
+      if (Array.isArray(value)) {
+        if (value.length === 0) return defaultText;
+        return value.map(item => {
+          if (typeof item === 'object' && item !== null) {
+            return item.title || item.name || item['Full name'] || item['Incident Title'] || item.Id || JSON.stringify(item);
+          }
+          return item;
+        }).join(', ');
+      }
+
+      // Handle Single Object
+      if (typeof value === 'object' && value !== null) {
+        return value.title || value.name || value['Full name'] || value['Incident Title'] || value.Id || defaultText;
+      }
+
+      return String(value);
+    }
+
     async function fetchData() {
-      // Fallback to Mock Data if API Token hasn't been pasted yet
       if (API_CONFIG.AUTH_TOKEN === 'PASTE_YOUR_NOCODB_TOKEN_HERE') {
-        document.getElementById('connection-status').textContent = 'Demo Mode (Add NocoDB Token)';
+        document.getElementById('connection-status').textContent = 'Demo Mode (Paste Token in Code)';
         document.getElementById('connection-status').style.color = '#f59e0b';
         loadMockData();
         return;
@@ -372,7 +442,6 @@
       try {
         const headers = { 'xc-token': API_CONFIG.AUTH_TOKEN, 'Content-Type': 'application/json' };
 
-        // Parallel Fetch for Civilians & Incidents
         const [civRes, incRes] = await Promise.all([
           fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.CITIZENS_ENDPOINT}`, { headers }),
           fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.INCIDENTS_ENDPOINT}`, { headers })
@@ -382,44 +451,47 @@
           const civData = await civRes.json();
           const incData = await incRes.json();
 
-          // Transform NocoDB JSON into Clean Internal Objects
           state.civilians = (civData.list || []).map(row => ({
             id: row.Id,
             fullName: row['Full name'] || 'Unknown',
-            robloxUsername: row['Roblox username'] || '',
-            discordUsername: row['Discord username'] || '',
-            photo: row['Photo'] || 'https://via.placeholder.com/150/1e293b/94a3b8?text=No+Photo',
-            vehicles: row['Vehicles'] || 'None registered'
+            robloxUsername: row['Roblox username'] || 'N/A',
+            discordUsername: row['Discord username'] || 'N/A',
+            photo: row['Photo'] || '',
+            vehicles: formatRelationalField(row['Vehicles'], 'None Registered')
           }));
 
           state.incidents = (incData.list || []).map(row => ({
             id: row.Id,
             title: row['Incident Title'] || 'Untitled Incident',
-            civilian: row['Civilian'] || 'N/A',
-            officer: row['Reporting Officer'] || 'N/A',
-            type: row['Type'] || 'General',
-            fineAmount: row['Fine/Bond Amount'] || '$0',
+            civilian: formatRelationalField(row['Civilian'], 'Unknown Civilian'),
+            officer: formatRelationalField(row['Reporting Officer'], 'Unassigned'),
+            type: formatRelationalField(row['Type'], 'General'),
+            fineAmount: formatRelationalField(row['Fine/Bond Amount'], '$0'),
             details: row['Details'] || ''
           }));
 
           document.getElementById('connection-status').textContent = 'Connected to NocoDB';
         }
       } catch (err) {
-        console.error('NocoDB Sync Error:', err);
-        document.getElementById('connection-status').textContent = 'Connection Error (Using Local Data)';
+        console.error('Fetch Error:', err);
+        document.getElementById('connection-status').textContent = 'NocoDB Sync Error';
       }
 
       render();
     }
 
-    /* -------------------------------------------------------------
-       3. UI RENDERING FUNCTIONS
-    ------------------------------------------------------------- */
     function render() {
       renderCivilians();
       renderIncidents();
+      
+      // Update Counters
       document.getElementById('civ-count').textContent = state.civilians.length;
       document.getElementById('inc-count').textContent = state.incidents.length;
+      document.getElementById('stat-civilians').textContent = state.civilians.length;
+      document.getElementById('stat-incidents').textContent = state.incidents.length;
+      
+      const vehicleCount = state.civilians.filter(c => c.vehicles && c.vehicles !== 'None Registered').length;
+      document.getElementById('stat-vehicles').textContent = vehicleCount;
     }
 
     function renderCivilians() {
@@ -431,35 +503,38 @@
       );
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state">No civilian profiles found matching your search.</div>`;
+        container.innerHTML = `<div class="empty-state">No civilian records found.</div>`;
         return;
       }
 
-      container.innerHTML = filtered.map(c => `
-        <div class="card">
-          <div class="card-header">
-            <img src="${c.photo}" class="civilian-avatar" alt="${c.fullName}" onerror="this.src='https://via.placeholder.com/150/1e293b/94a3b8?text=No+Photo'">
-            <div class="civilian-info">
-              <h3>${c.fullName}</h3>
-              <span style="color: var(--text-muted); font-size: 0.8rem;">Roblox: ${c.robloxUsername || 'N/A'}</span>
+      container.innerHTML = filtered.map(c => {
+        const photoUrl = c.photo || 'https://via.placeholder.com/150/151d30/94a3b8?text=NO+IMAGE';
+        return `
+          <div class="card">
+            <div class="card-header">
+              <img src="${photoUrl}" class="civilian-avatar" alt="${c.fullName}" onerror="this.src='https://via.placeholder.com/150/151d30/94a3b8?text=NO+IMAGE'">
+              <div class="civilian-info">
+                <h3>${c.fullName}</h3>
+                <span style="color: var(--text-muted); font-size: 0.8rem;">Roblox: ${c.robloxUsername}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="info-row">
+                <span class="info-label">Discord Username:</span>
+                <span class="info-value">${c.discordUsername}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Vehicles Registered:</span>
+                <span class="info-value" style="color: var(--accent-blue); text-align: right; max-width: 180px;">${c.vehicles}</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-secondary" onclick="editCivilian('${c.id}')">Edit Profile</button>
+              <button class="btn btn-danger" onclick="deleteCivilian('${c.id}')">Delete</button>
             </div>
           </div>
-          <div class="card-body">
-            <div class="info-row">
-              <span class="info-label">Discord:</span>
-              <span class="info-value">${c.discordUsername || 'N/A'}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Vehicles:</span>
-              <span class="info-value" style="text-align: right; max-width: 180px;">${c.vehicles}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button class="btn btn-secondary" onclick="editCivilian('${c.id}')">Edit Profile</button>
-            <button class="btn btn-danger" onclick="deleteCivilian('${c.id}')">Delete</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function renderIncidents() {
@@ -478,20 +553,17 @@
       container.innerHTML = filtered.map(i => `
         <tr>
           <td><strong>${i.title}</strong></td>
-          <td>${i.civilian}</td>
+          <td><span style="color: var(--text-main); font-weight: 500;">${i.civilian}</span></td>
           <td>${i.officer}</td>
-          <td><span style="background: rgba(59,130,246,0.15); color: var(--accent-blue); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">${i.type}</span></td>
-          <td>${i.fineAmount}</td>
+          <td><span style="background: rgba(59,130,246,0.15); color: var(--accent-blue); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">${i.type}</span></td>
+          <td style="font-family: 'JetBrains Mono', monospace;">${i.fineAmount}</td>
           <td>
-            <button class="btn btn-secondary" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="deleteIncident('${i.id}')">Delete</button>
+            <button class="btn btn-danger" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="deleteIncident('${i.id}')">Delete</button>
           </td>
         </tr>
       `).join('');
     }
 
-    /* -------------------------------------------------------------
-       4. INTERACTION & FORM HANDLERS
-    ------------------------------------------------------------- */
     function handleSearch() {
       state.searchQuery = document.getElementById('global-search').value;
       render();
@@ -511,7 +583,6 @@
       }
     }
 
-    // Modal Control
     function openAddCivilianModal() {
       document.getElementById('form-civilian').reset();
       document.getElementById('civ-id').value = '';
@@ -529,7 +600,6 @@
       document.getElementById(modalId).classList.remove('open');
     }
 
-    // Add / Edit Civilian Logic
     async function saveCivilian(e) {
       e.preventDefault();
       const id = document.getElementById('civ-id').value;
@@ -554,7 +624,6 @@
         });
         fetchData();
       } else {
-        // Local Fallback Mode
         if (id) {
           const index = state.civilians.findIndex(c => c.id === id);
           if (index !== -1) state.civilians[index] = { id, fullName: payload["Full name"], robloxUsername: payload["Roblox username"], discordUsername: payload["Discord username"], photo: payload["Photo"], vehicles: payload["Vehicles"] };
@@ -583,7 +652,7 @@
     }
 
     async function deleteCivilian(id) {
-      if (!confirm('Are you sure you want to delete this civilian record?')) return;
+      if (!confirm('Are you sure you want to delete this civilian profile?')) return;
 
       if (API_CONFIG.AUTH_TOKEN !== 'PASTE_YOUR_NOCODB_TOKEN_HERE') {
         await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.CITIZENS_ENDPOINT}/${id}`, {
@@ -597,7 +666,6 @@
       }
     }
 
-    // Save Incident Record
     async function saveIncident(e) {
       e.preventDefault();
 
@@ -632,7 +700,7 @@
     }
 
     async function deleteIncident(id) {
-      if (!confirm('Are you sure you want to delete this incident record?')) return;
+      if (!confirm('Are you sure you want to delete this record?')) return;
 
       if (API_CONFIG.AUTH_TOKEN !== 'PASTE_YOUR_NOCODB_TOKEN_HERE') {
         await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.INCIDENTS_ENDPOINT}/${id}`, {
@@ -646,7 +714,6 @@
       }
     }
 
-    // Mock Data Generator for Demo
     function loadMockData() {
       state.civilians = [
         { id: '1', fullName: 'John Doe', robloxUsername: 'JohnRoblox99', discordUsername: 'johndoe#1234', photo: '', vehicles: 'Black Sultan (ABC-123)' },
