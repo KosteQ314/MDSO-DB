@@ -68,7 +68,7 @@
       width: 100%;
     }
 
-    /* Dashboard Stats Bar */
+    /* Stats Bar */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -98,7 +98,7 @@
     .stat-info h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-info .stat-value { font-size: 1.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-top: 0.25rem; }
 
-    /* Controls & Toolbar */
+    /* Search & Control Toolbar */
     .controls-bar {
       display: flex;
       gap: 1rem;
@@ -142,7 +142,6 @@
     .btn-secondary:hover { background-color: var(--bg-card-hover); }
     .btn-danger { background-color: var(--danger); color: white; }
     .btn-danger:hover { background-color: var(--danger-hover); }
-    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
 
     /* Tabs Bar */
     .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
@@ -177,24 +176,22 @@
     .civilian-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background-color: var(--bg-dark); border: 2px solid var(--border-color); flex-shrink: 0; }
     .civilian-info h3 { font-size: 1.15rem; margin-bottom: 0.25rem; color: var(--text-main); }
     
-    .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; }
+    .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.9rem; }
     .info-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-    .info-label { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
-    .info-value { font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; word-break: break-word; text-align: right; }
+    .info-label { color: var(--text-muted); font-size: 0.85rem; }
+    .info-value { font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-align: right; }
 
     .plate-badge {
       display: inline-block;
-      background: #fef08a;
-      color: #1e293b;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
-      border: 1px solid #eab308;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
-      letter-spacing: 1px;
-      margin-left: 0.25rem;
-      margin-bottom: 0.25rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
     }
 
     .card-actions { padding: 1rem 1.25rem; background-color: rgba(0,0,0,0.2); border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; justify-content: flex-end; }
@@ -204,8 +201,7 @@
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
     th, td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); }
     th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
-    tr.clickable-row { cursor: pointer; transition: background-color 0.15s; }
-    tr.clickable-row:hover { background-color: var(--bg-card-hover); }
+    tr:hover { background-color: var(--bg-card-hover); cursor: pointer; }
 
     /* Modals */
     .modal-overlay {
@@ -227,7 +223,7 @@
       border: 1px solid var(--border-color);
       border-radius: 12px;
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 1.75rem;
@@ -235,17 +231,6 @@
     }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
     .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-
-    /* CAD Detail Views */
-    .profile-header-detail { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); }
-    .profile-img-large { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue); background: var(--bg-dark); }
-    
-    .detail-section { margin-bottom: 1.5rem; }
-    .detail-section h4 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.25rem; }
-    
-    .record-card-mini { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.5rem; }
-    .record-card-mini .title { font-weight: 600; color: var(--danger); font-size: 0.95rem; }
-    .record-card-mini .meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
 
     .form-group { margin-bottom: 1.25rem; }
     .form-label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
@@ -261,6 +246,10 @@
     }
     .form-control:focus { border-color: var(--accent-blue); }
     textarea.form-control { resize: vertical; min-height: 100px; }
+
+    .dossier-header { display: flex; gap: 1.25rem; align-items: center; background: var(--bg-dark); padding: 1.25rem; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 1.25rem; }
+    .dossier-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); flex-shrink: 0; }
+    .dossier-section-title { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 1.25rem 0 0.5rem 0; font-weight: 600; }
 
     .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
   </style>
@@ -347,31 +336,25 @@
     </div>
   </main>
 
-  <!-- Detailed Civilian View Modal -->
-  <div id="modal-civilian-detail" class="modal-overlay">
+  <!-- Civilian Detail / Dossier Modal -->
+  <div id="modal-dossier" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
-        <h3>Civilian Profile Overview</h3>
-        <button class="modal-close" onclick="closeModal('modal-civilian-detail')">&times;</button>
+        <h3>Civilian Dossier</h3>
+        <button class="modal-close" onclick="closeModal('modal-dossier')">&times;</button>
       </div>
-      <div id="civilian-detail-content"></div>
-      <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-        <button class="btn btn-secondary" onclick="closeModal('modal-civilian-detail')">Close</button>
-      </div>
+      <div id="dossier-content"></div>
     </div>
   </div>
 
-  <!-- Detailed Incident View Modal -->
+  <!-- Incident Detail Modal -->
   <div id="modal-incident-detail" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
-        <h3>Incident Record Details</h3>
+        <h3>Incident Details</h3>
         <button class="modal-close" onclick="closeModal('modal-incident-detail')">&times;</button>
       </div>
       <div id="incident-detail-content"></div>
-      <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-        <button class="btn btn-secondary" onclick="closeModal('modal-incident-detail')">Close</button>
-      </div>
     </div>
   </div>
 
@@ -398,11 +381,11 @@
         </div>
         <div class="form-group">
           <label class="form-label">Photo URL</label>
-          <input type="text" id="civ-photo" class="form-control" placeholder="https://example.com/photo.jpg">
+          <input type="url" id="civ-photo" class="form-control" placeholder="https://example.com/photo.jpg">
         </div>
         <div class="form-group">
-          <label class="form-label">Registered Vehicles (License Plates & Models)</label>
-          <input type="text" id="civ-vehicles" class="form-control" placeholder="e.g. ABC-1234 (Black Sultan), XYZ-999 (Red Cometa)">
+          <label class="form-label">Owned Vehicles / License Plates</label>
+          <input type="text" id="civ-vehicles" class="form-control" placeholder="e.g. Black Sultan (Plate: ABC-123)">
         </div>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-civilian')">Cancel</button>
@@ -434,14 +417,6 @@
           <input type="text" id="inc-officer" class="form-control" required placeholder="e.g. Officer Miller">
         </div>
         <div class="form-group">
-          <label class="form-label">Type / Category</label>
-          <input type="text" id="inc-type" class="form-control" placeholder="e.g. Traffic Violation, Felony">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Fine / Bond Amount</label>
-          <input type="text" id="inc-fine" class="form-control" placeholder="e.g. $500">
-        </div>
-        <div class="form-group">
           <label class="form-label">Details / Narrative</label>
           <textarea id="inc-details" class="form-control" placeholder="Enter incident report details..."></textarea>
         </div>
@@ -454,14 +429,13 @@
   </div>
 
   <script>
+    /* NocoDB API Configuration */
     const API_CONFIG = {
       BASE_URL: 'https://app.nocodb.com/api/v2/tables',
-      AUTH_TOKEN: 'nc_pat_Um3j8Q3N2oUQ4b2FsabzrCOsw6FMtAQEFWtFm4CE', // Paste Token from NocoDB Settings
+      AUTH_TOKEN: 'nc_pat_Um3j8Q3N2oUQ4b2FsabzrCOsw6FMtAQEFWtFm4CE', // Paste your Token from NocoDB Account Settings
       CITIZENS_ENDPOINT: '/mp0kwao6xpss118/records',
       INCIDENTS_ENDPOINT: '/mp6oaqbr190kp1x/records'
     };
-
-    const DEFAULT_AVATAR = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
 
     let state = {
       civilians: [],
@@ -470,38 +444,29 @@
       activeTab: 'civilians'
     };
 
+    const DEFAULT_AVATAR = 'https://via.placeholder.com/150/151d30/94a3b8?text=NO+IMAGE';
+
     document.addEventListener('DOMContentLoaded', () => {
       fetchData();
     });
 
-    /* Parse NocoDB Attachment Array or URL string safely */
+    /* NocoDB Image Attachment & URL Safe Parser */
     function parsePhotoUrl(photoData) {
       if (!photoData) return DEFAULT_AVATAR;
+      if (typeof photoData === 'string' && photoData.startsWith('http')) return photoData;
       
-      // If array of attachments from NocoDB
       if (Array.isArray(photoData) && photoData.length > 0) {
         const item = photoData[0];
+        if (typeof item === 'string' && item.startsWith('http')) return item;
         if (typeof item === 'object' && item !== null) {
-          return item.signedUrl || item.url || item.path || DEFAULT_AVATAR;
+          return item.signedUrl || item.url || item.path ? `https://app.nocodb.com/${item.signedUrl || item.url || item.path}` : DEFAULT_AVATAR;
         }
-        if (typeof item === 'string') return item;
       }
-      
-      // Single object attachment
-      if (typeof photoData === 'object' && photoData !== null) {
-        return photoData.signedUrl || photoData.url || photoData.path || DEFAULT_AVATAR;
-      }
-
-      // String URL
-      if (typeof photoData === 'string' && photoData.trim() !== '') {
-        return photoData.trim();
-      }
-
       return DEFAULT_AVATAR;
     }
 
-    /* Helper Function to Fix [object Object] from NocoDB Relational / Linked Fields */
-    function formatRelationalField(value, defaultText = 'N/A') {
+    /* Helper Function to Extract String / Plates safely without [object Object] */
+    function parseRelationalField(value, defaultText = 'None') {
       if (!value) return defaultText;
 
       if (Array.isArray(value)) {
@@ -510,7 +475,7 @@
           if (typeof item === 'object' && item !== null) {
             return item.title || item.name || item['Full name'] || item['Incident Title'] || item.Id || defaultText;
           }
-          return item;
+          return String(item);
         }).join(', ');
       }
 
@@ -519,6 +484,14 @@
       }
 
       return String(value);
+    }
+
+    /* Extract plates or vehicles safely */
+    function parseVehiclesList(vehData) {
+      const rawText = parseRelationalField(vehData, 'No Vehicles Registered');
+      if (rawText === 'No Vehicles Registered' || rawText === 'None') return [];
+
+      return rawText.split(',').map(item => item.trim()).filter(Boolean);
     }
 
     async function fetchData() {
@@ -542,29 +515,31 @@
           const incData = await incRes.json();
 
           state.civilians = (civData.list || []).map(row => ({
-            id: row.Id,
-            fullName: row['Full name'] || 'Unknown',
+            id: String(row.Id),
+            fullName: row['Full name'] || 'Unknown Civilian',
             robloxUsername: row['Roblox username'] || 'N/A',
             discordUsername: row['Discord username'] || 'N/A',
             photo: parsePhotoUrl(row['Photo']),
-            vehicles: formatRelationalField(row['Vehicles'], 'None Registered')
+            vehicles: parseVehiclesList(row['Vehicles'])
           }));
 
           state.incidents = (incData.list || []).map(row => ({
-            id: row.Id,
+            id: String(row.Id),
             title: row['Incident Title'] || 'Untitled Incident',
-            civilian: formatRelationalField(row['Civilian'], 'Unknown Civilian'),
-            officer: formatRelationalField(row['Reporting Officer'], 'Unassigned'),
-            type: formatRelationalField(row['Type'], 'General'),
-            fineAmount: formatRelationalField(row['Fine/Bond Amount'], '$0'),
-            details: row['Details'] || ''
+            civilian: parseRelationalField(row['Civilian'], 'Unknown Civilian'),
+            officer: parseRelationalField(row['Reporting Officer'], 'Unassigned'),
+            type: parseRelationalField(row['Type'], 'General'),
+            fineAmount: parseRelationalField(row['Fine/Bond Amount'], '$0'),
+            details: row['Details'] || 'No details provided.'
           }));
 
           document.getElementById('connection-status').textContent = 'Connected to NocoDB';
+          document.getElementById('connection-status').style.color = 'var(--success)';
         }
       } catch (err) {
         console.error('Fetch Error:', err);
         document.getElementById('connection-status').textContent = 'NocoDB Sync Error';
+        document.getElementById('connection-status').style.color = 'var(--danger)';
       }
 
       render();
@@ -574,14 +549,14 @@
       renderCivilians();
       renderIncidents();
       
-      // Update Counters
       document.getElementById('civ-count').textContent = state.civilians.length;
       document.getElementById('inc-count').textContent = state.incidents.length;
       document.getElementById('stat-civilians').textContent = state.civilians.length;
       document.getElementById('stat-incidents').textContent = state.incidents.length;
       
-      const vehicleCount = state.civilians.filter(c => c.vehicles && c.vehicles !== 'None Registered').length;
-      document.getElementById('stat-vehicles').textContent = vehicleCount;
+      let totalVehicles = 0;
+      state.civilians.forEach(c => totalVehicles += c.vehicles.length);
+      document.getElementById('stat-vehicles').textContent = totalVehicles;
     }
 
     function renderCivilians() {
@@ -589,8 +564,7 @@
       const filtered = state.civilians.filter(c => 
         c.fullName.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
         c.robloxUsername.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-        c.discordUsername.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-        c.vehicles.toLowerCase().includes(state.searchQuery.toLowerCase())
+        c.discordUsername.toLowerCase().includes(state.searchQuery.toLowerCase())
       );
 
       if (filtered.length === 0) {
@@ -599,14 +573,12 @@
       }
 
       container.innerHTML = filtered.map(c => {
-        // Format license plates visually
-        let vehiclesHTML = c.vehicles;
-        if (c.vehicles && c.vehicles !== 'None Registered') {
-          vehiclesHTML = c.vehicles.split(',').map(v => `<span class="plate-badge">${v.trim()}</span>`).join('');
-        }
+        const vehiclesMarkup = c.vehicles.length > 0 
+          ? c.vehicles.map(v => `<span class="plate-badge">${v}</span>`).join(' ')
+          : '<span style="color: var(--text-muted); font-size: 0.85rem;">None Registered</span>';
 
         return `
-          <div class="card" onclick="viewCivilianDetail('${c.id}')">
+          <div class="card" onclick="viewCivilianDossier('${c.id}')">
             <div class="card-header">
               <img src="${c.photo}" class="civilian-avatar" alt="${c.fullName}" onerror="this.src='${DEFAULT_AVATAR}'">
               <div class="civilian-info">
@@ -619,14 +591,14 @@
                 <span class="info-label">Discord:</span>
                 <span class="info-value">${c.discordUsername}</span>
               </div>
-              <div class="info-row" style="flex-direction: column; align-items: flex-start; margin-top: 0.25rem;">
-                <span class="info-label" style="margin-bottom: 0.25rem;">Vehicles & Plates:</span>
-                <div>${vehiclesHTML}</div>
+              <div class="info-row" style="flex-direction: column; align-items: flex-start;">
+                <span class="info-label" style="margin-bottom: 0.2rem;">Registered Vehicles / License Plates:</span>
+                <div>${vehiclesMarkup}</div>
               </div>
             </div>
             <div class="card-actions" onclick="event.stopPropagation()">
-              <button class="btn btn-secondary btn-sm" onclick="editCivilian('${c.id}')">Edit</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteCivilian('${c.id}')">Delete</button>
+              <button class="btn btn-secondary" onclick="editCivilian('${c.id}')">Edit Profile</button>
+              <button class="btn btn-danger" onclick="deleteCivilian('${c.id}')">Delete</button>
             </div>
           </div>
         `;
@@ -647,91 +619,89 @@
       }
 
       container.innerHTML = filtered.map(i => `
-        <tr class="clickable-row" onclick="viewIncidentDetail('${i.id}')">
+        <tr onclick="viewIncidentDetail('${i.id}')">
           <td><strong>${i.title}</strong></td>
-          <td><span style="color: var(--accent-blue); font-weight: 500;">${i.civilian}</span></td>
+          <td><span style="color: var(--text-main); font-weight: 500;">${i.civilian}</span></td>
           <td>${i.officer}</td>
           <td><span style="background: rgba(59,130,246,0.15); color: var(--accent-blue); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">${i.type}</span></td>
           <td style="font-family: 'JetBrains Mono', monospace;">${i.fineAmount}</td>
           <td onclick="event.stopPropagation()">
-            <button class="btn btn-danger btn-sm" onclick="deleteIncident('${i.id}')">Delete</button>
+            <button class="btn btn-danger" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" onclick="deleteIncident('${i.id}')">Delete</button>
           </td>
         </tr>
       `).join('');
     }
 
-    function viewCivilianDetail(id) {
+    /* Drill-down View: Civilian Dossier */
+    function viewCivilianDossier(id) {
       const civ = state.civilians.find(c => c.id === id);
       if (!civ) return;
 
-      // Find linked incidents
-      const linkedIncidents = state.incidents.filter(i => 
-        i.civilian.toLowerCase().includes(civ.fullName.toLowerCase())
-      );
+      const userIncidents = state.incidents.filter(i => i.civilian.toLowerCase().includes(civ.fullName.toLowerCase()));
 
-      let vehiclesHTML = civ.vehicles;
-      if (civ.vehicles && civ.vehicles !== 'None Registered') {
-        vehiclesHTML = civ.vehicles.split(',').map(v => `<span class="plate-badge">${v.trim()}</span>`).join(' ');
-      }
-
-      const content = `
-        <div class="profile-header-detail">
-          <img src="${civ.photo}" class="profile-img-large" onerror="this.src='${DEFAULT_AVATAR}'">
+      const content = document.getElementById('dossier-content');
+      content.innerHTML = `
+        <div class="dossier-header">
+          <img src="${civ.photo}" class="dossier-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
           <div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">${civ.fullName}</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Roblox: ${civ.robloxUsername} | Discord: ${civ.discordUsername}</p>
+            <h2 style="font-size: 1.3rem;">${civ.fullName}</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">Roblox: ${civ.robloxUsername} | Discord: ${civ.discordUsername}</p>
           </div>
         </div>
 
-        <div class="detail-section">
-          <h4>Registered Vehicles & Plates</h4>
-          <div>${vehiclesHTML}</div>
+        <div class="dossier-section-title">Registered Vehicles & License Plates</div>
+        <div style="background: var(--bg-dark); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+          ${civ.vehicles.length > 0 ? civ.vehicles.map(v => `<span class="plate-badge" style="font-size: 0.9rem; padding: 0.35rem 0.65rem;">${v}</span>`).join(' ') : '<span style="color: var(--text-muted);">No vehicles registered on file.</span>'}
         </div>
 
-        <div class="detail-section">
-          <h4>Police Incident Records (${linkedIncidents.length})</h4>
-          ${linkedIncidents.length === 0 ? '<p style="color: var(--text-muted); font-size: 0.85rem;">No prior criminal or traffic records found.</p>' : 
-            linkedIncidents.map(inc => `
-              <div class="record-card-mini">
-                <div class="title">${inc.title} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(${inc.type})</span></div>
-                <div class="meta"><strong>Officer:</strong> ${inc.officer} | <strong>Fine:</strong> ${inc.fineAmount}</div>
-                ${inc.details ? `<div style="font-size:0.85rem; margin-top:0.4rem; color: var(--text-main);">${inc.details}</div>` : ''}
-              </div>
-            `).join('')
-          }
+        <div class="dossier-section-title">Prior Incidents & Legal History (${userIncidents.length})</div>
+        <div style="background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden;">
+          ${userIncidents.length > 0 ? `
+            <table style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Officer</th>
+                  <th>Fine/Bond</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${userIncidents.map(i => `
+                  <tr>
+                    <td><strong>${i.title}</strong></td>
+                    <td>${i.officer}</td>
+                    <td style="font-family: 'JetBrains Mono', monospace; color: var(--warning);">${i.fineAmount}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          ` : '<div style="padding: 1rem; color: var(--text-muted); text-align: center;">Clean Record - No prior incidents found.</div>'}
         </div>
       `;
 
-      document.getElementById('civilian-detail-content').innerHTML = content;
-      document.getElementById('modal-civilian-detail').classList.add('open');
+      document.getElementById('modal-dossier').classList.add('open');
     }
 
+    /* Drill-down View: Incident Details */
     function viewIncidentDetail(id) {
       const inc = state.incidents.find(i => i.id === id);
       if (!inc) return;
 
-      const content = `
-        <div style="margin-bottom: 1.25rem;">
-          <h2 style="font-size: 1.4rem; color: var(--danger); margin-bottom: 0.5rem;">${inc.title}</h2>
-          <span style="background: rgba(59,130,246,0.15); color: var(--accent-blue); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">${inc.type}</span>
-        </div>
-
-        <div class="detail-section">
-          <h4>Involved Parties & Officers</h4>
-          <div class="info-row" style="margin-bottom: 0.5rem;"><span class="info-label">Civilian Subject:</span><span class="info-value">${inc.civilian}</span></div>
-          <div class="info-row" style="margin-bottom: 0.5rem;"><span class="info-label">Reporting Officer:</span><span class="info-value">${inc.officer}</span></div>
-          <div class="info-row"><span class="info-label">Fine / Bond:</span><span class="info-value" style="color: var(--warning);">${inc.fineAmount}</span></div>
-        </div>
-
-        <div class="detail-section">
-          <h4>Report Narrative / Case Details</h4>
-          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.5;">
-            ${inc.details || 'No narrative provided for this record.'}
+      const content = document.getElementById('incident-detail-content');
+      content.innerHTML = `
+        <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+          <h2 style="font-size: 1.2rem; color: var(--accent-blue); margin-bottom: 0.5rem;">${inc.title}</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.9rem;">
+            <div><span style="color: var(--text-muted);">Civilian:</span> <strong>${inc.civilian}</strong></div>
+            <div><span style="color: var(--text-muted);">Officer:</span> <strong>${inc.officer}</strong></div>
+            <div><span style="color: var(--text-muted);">Type:</span> <span class="plate-badge">${inc.type}</span></div>
+            <div><span style="color: var(--text-muted);">Fine / Bond:</span> <strong style="color: var(--warning); font-family: 'JetBrains Mono', monospace;">${inc.fineAmount}</strong></div>
           </div>
         </div>
+        <div class="dossier-section-title">Official Incident Narrative</div>
+        <div style="background: var(--bg-dark); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap;">${inc.details}</div>
       `;
 
-      document.getElementById('incident-detail-content').innerHTML = content;
       document.getElementById('modal-incident-detail').classList.add('open');
     }
 
@@ -764,7 +734,6 @@
     function openAddIncidentModal() {
       document.getElementById('form-incident').reset();
       document.getElementById('inc-id').value = '';
-      document.getElementById('modal-incident-title').textContent = 'File New Record';
       document.getElementById('modal-incident').classList.add('open');
     }
 
@@ -798,9 +767,9 @@
       } else {
         if (id) {
           const index = state.civilians.findIndex(c => c.id === id);
-          if (index !== -1) state.civilians[index] = { id, fullName: payload["Full name"], robloxUsername: payload["Roblox username"], discordUsername: payload["Discord username"], photo: parsePhotoUrl(payload["Photo"]), vehicles: payload["Vehicles"] };
+          if (index !== -1) state.civilians[index] = { id, fullName: payload["Full name"], robloxUsername: payload["Roblox username"], discordUsername: payload["Discord username"], photo: payload["Photo"], vehicles: parseVehiclesList(payload["Vehicles"]) };
         } else {
-          state.civilians.push({ id: Date.now().toString(), fullName: payload["Full name"], robloxUsername: payload["Roblox username"], discordUsername: payload["Discord username"], photo: parsePhotoUrl(payload["Photo"]), vehicles: payload["Vehicles"] });
+          state.civilians.push({ id: Date.now().toString(), fullName: payload["Full name"], robloxUsername: payload["Roblox username"], discordUsername: payload["Discord username"], photo: payload["Photo"], vehicles: parseVehiclesList(payload["Vehicles"]) });
         }
         render();
       }
@@ -817,7 +786,7 @@
       document.getElementById('civ-roblox').value = civ.robloxUsername;
       document.getElementById('civ-discord').value = civ.discordUsername;
       document.getElementById('civ-photo').value = civ.photo === DEFAULT_AVATAR ? '' : civ.photo;
-      document.getElementById('civ-vehicles').value = civ.vehicles;
+      document.getElementById('civ-vehicles').value = civ.vehicles.join(', ');
 
       document.getElementById('modal-civilian-title').textContent = 'Edit Civilian Profile';
       document.getElementById('modal-civilian').classList.add('open');
@@ -845,8 +814,6 @@
         "Incident Title": document.getElementById('inc-title').value,
         "Civilian": document.getElementById('inc-civilian').value,
         "Reporting Officer": document.getElementById('inc-officer').value,
-        "Type": document.getElementById('inc-type').value || 'General',
-        "Fine/Bond Amount": document.getElementById('inc-fine').value || '$0',
         "Details": document.getElementById('inc-details').value
       };
 
@@ -863,8 +830,8 @@
           title: payload["Incident Title"],
           civilian: payload["Civilian"],
           officer: payload["Reporting Officer"],
-          type: payload["Type"],
-          fineAmount: payload["Fine/Bond Amount"],
+          type: 'General',
+          fineAmount: '$0',
           details: payload["Details"]
         });
         render();
@@ -890,12 +857,11 @@
 
     function loadMockData() {
       state.civilians = [
-        { id: '1', fullName: 'John Doe', robloxUsername: 'JohnRoblox99', discordUsername: 'johndoe#1234', photo: '', vehicles: 'ABC-1234 (Black Sultan), XYZ-999 (Red Comet)' },
-        { id: '2', fullName: 'Jane Smith', robloxUsername: 'JaneRP', discordUsername: 'janesmith#5678', photo: '', vehicles: 'LSPD-012 (Vapid Cruiser)' }
+        { id: '1', fullName: 'John Doe', robloxUsername: 'JohnRoblox99', discordUsername: 'johndoe#1234', photo: '', vehicles: ['Black Sultan (Plate: ABC-123)'] },
+        { id: '2', fullName: 'Jane Smith', robloxUsername: 'JaneRP', discordUsername: 'janesmith#5678', photo: '', vehicles: ['Red Corvette (Plate: XYZ-999)'] }
       ];
       state.incidents = [
-        { id: '101', title: '10-80 Vehicle Pursuit & Reckless Driving', civilian: 'John Doe', officer: 'Officer Miller', type: 'Traffic Felony', fineAmount: '$1,250', details: 'Vehicle clocked doing 95mph in a 45mph zone. Refused to stop during traffic stop initiated on Highway 1.' },
-        { id: '102', title: 'Illegal Parking in Fire Lane', civilian: 'Jane Smith', officer: 'Officer Davis', type: 'Infraction', fineAmount: '$150', details: 'Vehicle parked in front of fire hydrant at Legion Square.' }
+        { id: '101', title: 'Speeding & Reckless Driving', civilian: 'John Doe', officer: 'Officer Miller', type: 'Traffic Violation', fineAmount: '$250', details: 'Vehicle clocked doing 95mph in a 45mph zone.' }
       ];
       render();
     }
